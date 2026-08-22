@@ -14,12 +14,18 @@ function menuGoster() {
     console.log("1- Görev Ekle");
     console.log("2- Görevleri Listele");
     console.log("3- Görev Sil");
-    console.log("4- Çıkış");
+    console.log("4- Görev Tamamla")
+    console.log("5- Çıkış");
     
     r1.question("Seçiminiz. ",(secim)=>{
         if(secim==="1"){
             r1.question("Görevi Girin: ", (gorev)=>{
-                gorevler.push(gorev);
+
+                gorevler.push({
+                    ad: gorev,
+                    tamamlandı: false
+                });
+
                 console.log("Görev Eklendi: " + gorev);
                 menuGoster();
             })
@@ -31,7 +37,8 @@ function menuGoster() {
             else{
                 console.log("\n=== Görevler ===");
                 gorevler.forEach((gorev,index)=>{
-                    console.log((index+1) + "-" + gorev);
+                    const durum = gorev.tamamlandı ? "✓" : " ";
+                    console.log((index+1) + "- [" + durum + "] " + gorev.ad);
                 });
             }
             menuGoster();
@@ -45,15 +52,16 @@ function menuGoster() {
 
             console.log("\n=== Görevler ===");
 
-            gorevler.forEach((gorev,index)=>{
-                console.log((index+1) + "-" + gorev);
-            })
+            gorevler.forEach((gorev, index) => {
+                const durum = gorev.tamamlandı ? "✓" : " ";
+                console.log((index + 1) + "- [" + durum + "] " + gorev.ad);
+            });
             r1.question("Silmek İstediğiniz Görev Numarası: ",(numara)=>{
                 const index = Number(numara)-1;
 
                 if(index >=0 && index< gorevler.length){
                     const silinenGörev = gorevler.splice(index,1);
-                    console.log("Silinen Görev: " + silinenGörev[0]);
+                    console.log("Silinen Görev: " + silinenGörev[0].ad);
                 }
                 else{
                     console.log("Geçersiz görev numarası.");
@@ -63,10 +71,39 @@ function menuGoster() {
 
                     
             })
-
-
         }
+
         else if(secim==="4"){
+
+            if(gorevler.length === 0){
+                console.log("Tamamlanacak Görev Yok. ");
+                menuGoster();
+                return;
+            }
+
+            console.log("\n=== Görevler ===")
+
+            gorevler.forEach((gorev,index)=>{
+                const durum = gorev.tamamlandı ? "✓" : " ";
+                console.log((index + 1) + "- [" + durum + "] " + gorev.ad);
+            });
+
+            r1.question("Tamamlanan Görev Numarası: ", (numara)=>{
+                const index = Number(numara) -1;
+                if(index>=0 && index < gorevler.length){
+                    gorevler[index].tamamlandı = true;
+
+                    console.log("Görev Tamamlandı: " + gorevler[index].ad);
+
+                     
+            }
+                else{
+                    console.log("Geçersiz Görev Numarası. ")
+                }
+                menuGoster();
+            });
+        }
+        else if(secim==="5"){
             console.log("Program Kapatılıyor...");
             r1.close();
         }
